@@ -2,6 +2,13 @@
 
 include("classes/DomDocumentParser.php");
 
+$alreadyCrawled = array(); //contains old links already crawled
+$crawling = array(); //conatins the ones we still need to do
+
+//****************************************************************************************************/
+// -- CREATE LINKS FUNCTION
+//****************************************************************************************************/
+
 function createLink($src, $url) {
 
     $scheme  = parse_url($url)["scheme"];               //http type
@@ -28,9 +35,43 @@ function createLink($src, $url) {
                                                         // host: www.reecekenney.com
 }
 
+//****************************************************************************************************/
+// -- GET WEB DETAILS FUNCTION
+//****************************************************************************************************/
+
+function getDetails($url) {
+
+    $parser = new DomDocumentParser($url); 
+
+    $titleArray = $parser->getTitleTags();              //get title tags
+
+    if (sizeof($titleArray) == 0 || $titleArray->item(0) == NULL) {         //make sure there's no empty titles
+        return;
+    }
+
+    $title = $titleArray->item(0)->nodeValue;           // ensure we start from the first one (in case of multiple title tags)
+    $title = str_replace("\n", "", $title);             // replace new lines with an empty string
+    if($title == "") {                                  //ignore websites that don't have a title
+        return;
+    }
+
+
+
+    echo "URL: $url, Title: $title <br>";
+
+}
+
+//****************************************************************************************************/
+// -- RECURSSIVE LINK SEARCH FUNCTION
+//****************************************************************************************************/
+
 function followLinks($url) {
 
+    global $alreadyCrawled;
+    global $crawling;
+
     $parser = new DomDocumentParser($url); //set new instance of the class
+   
     $linkList = $parser->getLinks(); //grab the anchor links from parser class
 
     foreach($linkList as $link) {
@@ -43,9 +84,29 @@ function followLinks($url) {
         }
 
         $href = createLink($href, $url);
-        echo $href . "<br>";
+
+            if(!in_array($href, $alreadyCrawled)) {                //if the value is not in the array
+                $alreadyCrawled[] = $href;              //put the href into already crawled
+                $crawling[] = $href;                    //also put it into crawling
+
+                getDetails($href);                      //call function
+            }
+
+            else return;                                //stop running as soon as it finds it firts duplicate
+            
         }
+
+        array_shift($crawling); //this funtion then removes the value from the array as we dont need it anymore
+
+        foreach($crawling as $site) { //loop through 
+            followLinks($site);
     }
+
+}
+
+//****************************************************************************************************/
+// -- START URL AREA
+//****************************************************************************************************/
 
 $startUrl = "http://www.facebook.com"; //change this for different sites
 followLinks($startUrl);
