@@ -1,9 +1,41 @@
 <?php
 
 include("classes/DomDocumentParser.php");
+include("config.php");
 
 $alreadyCrawled = array(); //contains old links already crawled
 $crawling = array(); //conatins the ones we still need to do
+
+//****************************************************************************************************/
+// -- CONNECT TO DATABASE AND BIND PARAMETERS
+//****************************************************************************************************/
+
+function linkExists($url) {           //database query takes 4 params
+    global $con;
+
+    $query = $con->prepare("SELECT * FROM sites WHERE url = :url"); //
+
+    $query->bindParam(":url", $url);                    
+    $query->execute();  
+
+    return $query->rowCount() != 0;                                         //return number of rows
+
+}
+
+function insertLink($url, $title, $description, $keywords) {           //database query takes 4 params
+    global $con;
+
+    $query = $con->prepare("INSERT INTO site(url, title, description, keywords)
+                            VALUES(:url, :title, :description, :keywords)"); //prepare statement
+
+    $query->bindParam(":url", $url);                    //Bind paramters together prevents SQL injection
+    $query->bindParam(":title", $title);
+    $query->bindParam(":description", $description);
+    $query->bindParam(":keywords", $keywords);
+
+    return $query->execute();                           //query returns true / false 
+}
+
 
 //****************************************************************************************************/
 // -- CREATE AND CLEAN LINKS FUNCTION
@@ -73,8 +105,18 @@ function getDetails($url) {
     $description = str_replace("\n", "", $description);         //Replace new lines with empty string
     $keywords = str_replace("\n", "", $keywords);
 
+    if(linkExists($url)) {
+        echo "link already exits<br>";
+    }
+    else if(insertLink($url, $title, $description, $keywords )) { //Insert data into the database
+        echo "SUCCESS: $url<br>";
+    }      
+    else {
+        echo "ERROR: failed to insert<br>";
+    }   
 
-    echo "URL: $url <br>, Description: $description <br>, Keywords: $keywords <br>";
+
+    // echo "URL: $url <br>, Description: $description <br>, Keywords: $keywords <br>";
 
 }
 
@@ -109,7 +151,7 @@ function followLinks($url) {
                 getDetails($href);                      //call function
             }
 
-            else return;                                //stop running as soon as it finds it firts duplicate
+            // else return;                                //stop running as soon as it finds it first duplicate
             
         }
 

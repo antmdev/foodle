@@ -91,7 +91,7 @@ align items mean all in a row
 best to use two or three classes to make sure the path is less likely to overwrite somethign accidently*/
 
 .header {
-    background-color: #FAFAFA;
+    background-color: #ffffff;
     border-bottom: 1px solid #ebebeb;
 }
 
@@ -112,7 +112,7 @@ best to use two or three classes to make sure the path is less likely to overwri
 }
 
 .headerContent .searchContainer form {
-    margin: 15px 0 28px 0;
+    margin: 23px 0 28px 0;
 }
 .headerContent .searchBarContainer {
     height: 44px;
@@ -123,6 +123,7 @@ best to use two or three classes to make sure the path is less likely to overwri
     max-width: 630px;
     box-sizing: border-box;
     display: flex;
+    border-radius: 25px;
 
 }
 .headerContent .searchBarContainer .searchBox {
@@ -135,16 +136,21 @@ best to use two or three classes to make sure the path is less likely to overwri
 }
 
 .headerContent .searchBarContainer .searchButton {
-    background-color:#fff;
+    background-color:transparent;
     height: 44px;
     margin-top: 0;
     width: 44px;
-    padding-right: 20px;
+    padding-right: 30px;
     display: flex;
     justify-content: center;
+    z-index: 1;
 }
 .headerContent .searchBarContainer .searchButton {
     width: 22px;
+}
+
+.headerContent .searchContainer input {
+    outline:none;
 }
 
 .tabsContainer {
