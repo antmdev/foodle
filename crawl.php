@@ -6,7 +6,7 @@ $alreadyCrawled = array(); //contains old links already crawled
 $crawling = array(); //conatins the ones we still need to do
 
 //****************************************************************************************************/
-// -- CREATE LINKS FUNCTION
+// -- CREATE AND CLEAN LINKS FUNCTION
 //****************************************************************************************************/
 
 function createLink($src, $url) {
@@ -43,7 +43,7 @@ function getDetails($url) {
 
     $parser = new DomDocumentParser($url); 
 
-    $titleArray = $parser->getTitleTags();              //get title tags
+    $titleArray = $parser->getTitleTags();              // ******* GET TITLE TAGS ****** //
 
     if (sizeof($titleArray) == 0 || $titleArray->item(0) == NULL) {         //make sure there's no empty titles
         return;
@@ -55,9 +55,26 @@ function getDetails($url) {
         return;
     }
 
+    $description = "";                                  // ******* GET META TAGS ******* //
+    $keywords = "";
+
+    $metasArray = $parser->getMetaTags();
+
+    foreach($metasArray as $meta) {
+
+        if($meta->getAttribute("name") == "description") {      //If a meta "description" is found
+            $description = $meta->getAttribute("content");      //assign the content to $description
+        }
+        if($meta->getAttribute("name") == "keywords")    {      //If a meta "keywords" is found
+            $keywords = $meta->getAttribute("content");         //assign content to $keywords
+        }
+    }
+
+    $description = str_replace("\n", "", $description);         //Replace new lines with empty string
+    $keywords = str_replace("\n", "", $keywords);
 
 
-    echo "URL: $url, Title: $title <br>";
+    echo "URL: $url <br>, Description: $description <br>, Keywords: $keywords <br>";
 
 }
 
@@ -85,7 +102,7 @@ function followLinks($url) {
 
         $href = createLink($href, $url);
 
-            if(!in_array($href, $alreadyCrawled)) {                //if the value is not in the array
+            if(!in_array($href, $alreadyCrawled)) {     //if the value is not in the array
                 $alreadyCrawled[] = $href;              //put the href into already crawled
                 $crawling[] = $href;                    //also put it into crawling
 
@@ -108,7 +125,7 @@ function followLinks($url) {
 // -- START URL AREA
 //****************************************************************************************************/
 
-$startUrl = "http://www.facebook.com"; //change this for different sites
+$startUrl = "http://www.bbc.com"; //change this for different sites
 followLinks($startUrl);
 
 ?>
