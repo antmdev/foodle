@@ -22,10 +22,11 @@
         </div> <!-- logoContainer -->
 
             <div class="searchContainer">
-                <form action="search.php" method="GET">
+                <form class="searchForm" action="search.php" method="GET">
                 <input class="searchBox" type="text" name="term">
-                <input class="searchButton" type="submit" name="Search" >
+                <input class="searchButton" type="submit" name="Search" value="Foodle Search">
                 </form>
+                
             </div> <!-- searchContainer -->
         </div> <!-- mainSection -->
     </div>   <!-- indexPage -->

@@ -46,10 +46,15 @@ class SitesResultsProvider {
             $title = $row["title"];
             $description = $row["description"];
 
-            $resultsHtml .= "<div class='resultContainer'>
+            $title = $this->trimField($title, 55);
+            $url = $this->trimField($url, 86);
+            $description = $this->trimField($description, 230);
+            
+
+            $resultsHtml .= "<div class='resultContainer'>       
 
                             <h3 class='title'>
-                                <a class='result' href='$url'>
+                                <a class='result' href='$url'>      
                                     $title
                                 </a>
                             </h3>
@@ -61,6 +66,14 @@ class SitesResultsProvider {
         }            
 
         return $resultsHtml .= "</div>";
+    }
+
+    private function trimField($string, $characterLimit) {                         //trim long descriptions (only called within this class so private)
+
+        $dots = strlen($string) > $characterLimit ? "..." : "" ;    //if length of string is > char limit then $dots variable becomes ..., otherwise an empty string
+        
+        return substr($string, 0, $characterLimit) . $dots; //take the substring of what is created above, from 0 to the characterlimit and append $dots
+
     }
 }
 

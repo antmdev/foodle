@@ -1,6 +1,7 @@
 * {
 	font-family: arial, sans-serif;
-	color: #545454;
+    color: #545454;
+    text-decoration: none;
 }
 
 html,
@@ -24,7 +25,7 @@ body {
 .mainSection {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+    align-items: center;
 }
 
 .mainSection .searchContainer {
@@ -35,7 +36,8 @@ body {
 .mainSection .searchContainer form {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+    align-items: center;
+    margin-left: 30px;
 }
 
 .searchContainer .searchButton {
@@ -51,6 +53,7 @@ body {
     margin-top: 20px;
     cursor: pointer;
     outline: none;
+
 	
 }
 
@@ -75,11 +78,13 @@ body {
 .mainSection .logoContainer {
     width: 220px;
     text-align: center;
+    align-content: center;
+    margin-left: 3%;
 
 }
 
 .logoContainer img {
-    width: 100%
+    width: 100%;
 
 }
 
@@ -150,6 +155,7 @@ best to use two or three classes to make sure the path is less likely to overwri
 
 .headerContent .searchContainer input {
     outline:none;
+    padding-left: 18px !important;
 }
 
 .tabsContainer {
@@ -166,6 +172,7 @@ best to use two or three classes to make sure the path is less likely to overwri
     padding: 0 16px 12px 16px;
     colour: #777;
     font-size: 13px;
+
 }
 
 .tabsContainer .tabsList li a {
@@ -179,6 +186,7 @@ best to use two or three classes to make sure the path is less likely to overwri
 .tabsContainer .tabList li.active a {
     font-weight: bold;
     color: #1a73e8;
+    text-decoration: none;
 }
 
 .mainResultsSection {
@@ -188,6 +196,7 @@ best to use two or three classes to make sure the path is less likely to overwri
     font-size: 13px;
     color: #808080;
     margin-left: 170px;
+
 }
 
 .mainResultsSection .siteResults {

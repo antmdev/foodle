@@ -9,7 +9,7 @@ include("classes/sitesResultsProvider.php");
     } else { 
         exit("You must enter a search term"); //ends all code after this point and displsays this message
     }
-    $type = isset ($_GET["type"]) ? $_GET["type"] : "Sites" //shorthand version
+    $type = isset ($_GET["type"]) ? $_GET["type"] : "sites" //shorthand version
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +39,7 @@ include("classes/sitesResultsProvider.php");
                     <form action="search.php" method="GET">
 
                         <div class="searchBarContainer">
-                        <input type="text" class="searchBox" name="term">
+                        <input type="text" class="searchBox" name="term" value="<?php echo $term ?>"> 
                         <button class="searchButton">
                         <img src="assets/images/icons/icons8-search-24.png">
                         </button>
@@ -73,13 +73,13 @@ include("classes/sitesResultsProvider.php");
           
    <?php
 
-    $resultProvider = new SitesResultsProvider($con);
+        $resultProvider = new SitesResultsProvider($con);
 
-    $numResults = $resultProvider->getNumResults($term);
+        $numResults = $resultProvider->getNumResults($term);
 
-    echo "<p class='resultsCount'>$numResults results found</p>";
+        echo "<p class='resultsCount'>$numResults results found</p>";
 
-    echo $resultProvider->getResultsHtml(1, 20, $term);
+        echo $resultProvider->getResultsHtml(1, 20, $term);
 
     ?>
 

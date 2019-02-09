@@ -154,7 +154,7 @@ function getDetails($url) {
 
 //****************************************************************************************************/
 // -- UNCOMMENT RETURN TO STOP IMAGE LINK CRAWLER
-        // return;  
+        //  return;  
     
     $imageArray = $parser->getImages();                         // ******* GET IMAGES  ******* //
 
@@ -232,7 +232,11 @@ function followLinks($url) {
 // -- START URL AREA
 //****************************************************************************************************/
 
-$startUrl = "https://www.hellofresh.co.uk/recipes/"; //change this for different sites
+$startUrl = "https://www.deliciousmagazine.co.uk/recipe/"; //change this for different sites
 followLinks($startUrl);
+
+//https://www.deliciousmagazine.co.uk/recipe/
+//https://www.hellofresh.co.uk/recipes/
+//https://www.bbcgoodfood.com/
 
 ?>
