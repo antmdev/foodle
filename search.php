@@ -78,7 +78,9 @@ include("classes/sitesResultsProvider.php");
     $numResults = $resultProvider->getNumResults($term);
 
     echo "<p class='resultsCount'>$numResults results found</p>";
-    
+
+    echo $resultProvider->getResultsHtml(1, 20, $term);
+
     ?>
 
     </div><!-- mainResultsSection -->
