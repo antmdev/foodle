@@ -1,19 +1,19 @@
 <?php
-
 include("classes/DomDocumentParser.php");
 include("config.php");
 
-$alreadyCrawled = array(); //contains old links already crawled
-$crawling = array(); //conatins the ones we still need to do
+$alreadyCrawled = array();                      //contains old links already crawled
+$crawling = array();                            //contains the ones we still need to do
+$alreadyFoundImages = array();                  //contains images we've already done
 
 //****************************************************************************************************/
-// -- CONNECT TO DATABASE AND BIND PARAMETERS
+// -- CONNECT TO DB AND BIND PARAMETERS
 //****************************************************************************************************/
 
-function linkExists($url) {           //database query takes 4 params
+function linkExists($url) {           //database query takes 1 param
     global $con;
 
-    $query = $con->prepare("SELECT * FROM sites WHERE url = :url"); //
+    $query = $con->prepare("SELECT * FROM sites WHERE url = :url");     // ******* BIND PARAMS ****** //
 
     $query->bindParam(":url", $url);                    
     $query->execute();  
@@ -22,19 +22,53 @@ function linkExists($url) {           //database query takes 4 params
 
 }
 
-function insertLink($url, $title, $description, $keywords) {           //database query takes 4 params
+// ////////////////////////
+// function imageExists($src) {           //database query takes 1 param
+//     global $con;
+
+//     $query = $con->prepare("SELECT * FROM images WHERE siteUrl = :siteUrl");     // ******* BIND PARAMS ****** //
+
+//     $query->bindParam(":siteUrl", $src);                    
+//     $query->execute();  
+
+//     return $query->rowCount() != 0;                                         //return number of rows
+
+// }
+// /////////////////////////
+
+
+function insertLink($url, $title, $description, $keywords) {            // ******* INSERT LINKS DB ****** //
     global $con;
 
-    $query = $con->prepare("INSERT INTO site(url, title, description, keywords)
+    $query = $con->prepare("INSERT INTO sites(url, title, description, keywords)
                             VALUES(:url, :title, :description, :keywords)"); //prepare statement
 
-    $query->bindParam(":url", $url);                    //Bind paramters together prevents SQL injection
+    $query->bindParam(":url", $url);                                     //Bind paramters together prevents SQL injection
     $query->bindParam(":title", $title);
     $query->bindParam(":description", $description);
     $query->bindParam(":keywords", $keywords);
 
-    return $query->execute();                           //query returns true / false 
+    return $query->execute();                                            //query returns true / false 
 }
+
+
+function insertImage($url, $src, $alt, $title) {                        // ******* INSERT IMAGES DB ****** //
+    global $con;
+
+    $query = $con->prepare("INSERT INTO images(siteUrl, imageUrl, alt, title)
+                            VALUES(:siteUrl, :imageUrl, :alt, :title)");
+
+    $query->bindParam(":siteUrl", $url);                                   
+    $query->bindParam(":imageUrl", $src);
+    $query->bindParam(":alt", $alt);
+    $query->bindParam(":title", $title);
+
+    return $query->execute();                            
+}
+
+
+
+ // ******* Update DB Links ****** //
 
 
 //****************************************************************************************************/
@@ -43,8 +77,8 @@ function insertLink($url, $title, $description, $keywords) {           //databas
 
 function createLink($src, $url) {
 
-    $scheme  = parse_url($url)["scheme"];               //http type
-    $host  = parse_url($url)["host"];                   //www.reecekenney.com
+    $scheme = parse_url($url)["scheme"];               //http type
+    $host = parse_url($url)["host"];                   //www.antmilner.com
 
     if(substr($src, 0, 2) == "//" ){                    //fix links that already have 2 // forward slash
         $src = parse_url($url)["scheme"] . ":" . $src;  //built in JS function-parse URLS and grab the Scheme join to domain
@@ -73,6 +107,8 @@ function createLink($src, $url) {
 
 function getDetails($url) {
 
+    global $alreadyFoundImages;
+
     $parser = new DomDocumentParser($url); 
 
     $titleArray = $parser->getTitleTags();              // ******* GET TITLE TAGS ****** //
@@ -83,6 +119,7 @@ function getDetails($url) {
 
     $title = $titleArray->item(0)->nodeValue;           // ensure we start from the first one (in case of multiple title tags)
     $title = str_replace("\n", "", $title);             // replace new lines with an empty string
+
     if($title == "") {                                  //ignore websites that don't have a title
         return;
     }
@@ -110,10 +147,31 @@ function getDetails($url) {
     }
     else if(insertLink($url, $title, $description, $keywords )) { //Insert data into the database
         echo "SUCCESS: $url<br>";
-    }      
+    }  
     else {
         echo "ERROR: failed to insert<br>";
-    }   
+    } 
+    
+    $imageArray = $parser->getImages();                         // ******* GET IMAGES  ******* //
+
+    foreach($imageArray as $image) {
+        $src = $image->getAttribute("src");
+        $alt = $image->getAttribute("alt");
+        $title = $image->getAttribute("title");
+
+        if(!$title && !$alt) {                              //if title and alt aren't there then ignore image 
+            continue;
+        }
+
+        $src = createLink($src, $url);       //Take relative link of an image and convert to full link using function
+
+        if(!in_array($src, $alreadyFoundImages)) {                         //if the value is not in the array
+            $alreadyFoundImages[] = $src;                   //put the src into already array
+
+         echo "INSERT: " . insertImage($url, $src, $alt, $title);
+
+        }
+    }
 
 
     // echo "URL: $url <br>, Description: $description <br>, Keywords: $keywords <br>";
@@ -138,7 +196,8 @@ function followLinks($url) {
 
         if(strpos($href, "#") !== false) { //if you find a # in the anchor link just ignore it 
             continue;
-        } else if(substr($href, 0, 11) == "javascript:") { //remove javascript links
+        } 
+        else if(substr($href, 0, 11) == "javascript:") { //remove javascript links
             continue;
         }
 
@@ -151,9 +210,27 @@ function followLinks($url) {
                 getDetails($href);                      //call function
             }
 
-            // else return;                                //stop running as soon as it finds it first duplicate
+         else return;                                   // ******* UNCOMMENT THIS AND RE-RUN TO STOP SITE CRAWLER   ******* //
+                                                        //stop running as soon as it finds it first duplicate URL
             
         }
+//****************************************************************************************************/
+// -- TEST TO TURN OFF IMAGE CRAWLER 
+//****************************************************************************************************/
+       
+        $src = createLink($src, $url);       //Take relative link of an image and convert to full link using function
+
+        if(!in_array($src, $alreadyFoundImages)) {                         //if the value is not in the array
+            $alreadyFoundImages[] = $src;                   //put the src into already array
+            $crawling[] = $src;
+            
+            getDetails($src);
+        }
+
+        else return;  
+
+//****************************************************************************************************/
+
 
         array_shift($crawling); //this funtion then removes the value from the array as we dont need it anymore
 
@@ -167,7 +244,7 @@ function followLinks($url) {
 // -- START URL AREA
 //****************************************************************************************************/
 
-$startUrl = "http://www.bbc.com"; //change this for different sites
+$startUrl = "https://www.bbcgoodfood.com/"; //change this for different sites
 followLinks($startUrl);
 
 ?>

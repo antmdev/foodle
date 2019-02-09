@@ -18,8 +18,9 @@
 <Div class="wrapper indexPage">
     <div class="mainSection">
         <div class="logoContainer">
-            <img src="/doodle/assets/images/festisite_google.png" alt="google logo">
+            <img src="/doodle/assets/images/festisite_google.png" title="Logo for our site" alt="google logo">
         </div> <!-- logoContainer -->
+
             <div class="searchContainer">
                 <form action="search.php" method="GET">
                 <input class="searchBox" type="text" name="term">

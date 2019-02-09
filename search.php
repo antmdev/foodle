@@ -18,7 +18,7 @@ include("config.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-    <title>Welcome to Doodle</title>
+    <title>Welcome to Foodle</title>
 </head>
 
 <body>
