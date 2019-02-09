@@ -151,6 +151,10 @@ function getDetails($url) {
     else {
         echo "ERROR: failed to insert<br>";
     } 
+
+//****************************************************************************************************/
+// -- UNCOMMENT RETURN TO STOP IMAGE LINK CRAWLER
+        // return;  
     
     $imageArray = $parser->getImages();                         // ******* GET IMAGES  ******* //
 
@@ -209,28 +213,12 @@ function followLinks($url) {
 
                 getDetails($href);                      //call function
             }
-
-         else return;                                   // ******* UNCOMMENT THIS AND RE-RUN TO STOP SITE CRAWLER   ******* //
-                                                        //stop running as soon as it finds it first duplicate URL
+//****************************************************************************************************/
+// -- UNCOMMENT RETURN TO STOP SITE LINK CRAWLER
+        //  else return;                                
+                                                        
             
         }
-//****************************************************************************************************/
-// -- TEST TO TURN OFF IMAGE CRAWLER 
-//****************************************************************************************************/
-       
-        $src = createLink($src, $url);       //Take relative link of an image and convert to full link using function
-
-        if(!in_array($src, $alreadyFoundImages)) {                         //if the value is not in the array
-            $alreadyFoundImages[] = $src;                   //put the src into already array
-            $crawling[] = $src;
-            
-            getDetails($src);
-        }
-
-        else return;  
-
-//****************************************************************************************************/
-
 
         array_shift($crawling); //this funtion then removes the value from the array as we dont need it anymore
 
@@ -244,7 +232,7 @@ function followLinks($url) {
 // -- START URL AREA
 //****************************************************************************************************/
 
-$startUrl = "https://www.bbcgoodfood.com/"; //change this for different sites
+$startUrl = "https://www.hellofresh.co.uk/recipes/"; //change this for different sites
 followLinks($startUrl);
 
 ?>

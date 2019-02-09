@@ -181,3 +181,12 @@ best to use two or three classes to make sure the path is less likely to overwri
     font-weight: bold;
     color: #1a73e8;
 }
+
+.mainResultsSection {
+    flex: 1         /*fill up all psace to bottom of page*/
+}
+.mainResultsSection .resultsCount {
+    font-size: 13px;
+    color: #808080;
+    margin-left: 150px;
+}

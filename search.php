@@ -1,6 +1,7 @@
 <?php
 
 include("config.php");
+include("classes/sitesResultsProvider.php");
 
 
     if(isset ($_GET["term"])) {
@@ -67,6 +68,21 @@ include("config.php");
 
             </div><!-- tabsContainer -->
         </div> <!-- header -->  
-    </div> <!-- wrapper -->
+       
+    <div class="mainResultsSection">
+          
+   <?php
+
+    $resultProvider = new SitesResultsProvider($con);
+
+    $numResults = $resultProvider->getNumResults($term);
+
+    echo "<p class='resultsCount'>$numResults results found</p>";
+    
+    ?>
+
+    </div><!-- mainResultsSection -->
+    
+</div> <!-- wrapper -->
 </body>
 </html>
