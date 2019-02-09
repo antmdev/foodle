@@ -107,7 +107,6 @@ best to use two or three classes to make sure the path is less likely to overwri
 } 
 
 .headerContent .searchContainer {
-
     flex: 1;
 }
 
@@ -188,5 +187,40 @@ best to use two or three classes to make sure the path is less likely to overwri
 .mainResultsSection .resultsCount {
     font-size: 13px;
     color: #808080;
-    margin-left: 150px;
+    margin-left: 170px;
+}
+
+.mainResultsSection .siteResults {
+    margin-left: 180px;         /*fill up all psace to bottom of page*/
+    max-width: 610px;
+    /* padding-right: 56%;         fill up all psace to bottom of page */
+}
+
+.resultContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 26px;
+}
+
+.resultContainer .title {
+    margin: 0;
+}
+
+.resultContainer .title a {
+    color: #1a0dab;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.resultContainer .title a:hover {
+    text-decoration: underline;
+}
+
+.resultContainer .url {
+    color: #006621;
+    font-size: 14px;
+}
+.resultContainer .description {
+    font-size: 12px;
 }

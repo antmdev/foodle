@@ -17,13 +17,10 @@ class SitesResultsProvider {
                                         OR description LIKE :term");
         
         $searchTerm = "%" . $term . "%";                    //bind terms with %term% for SQL LIKE command
-
         $query->bindParam(":term", $searchTerm); 
-
         $query->execute();
-
+        
         $row = $query->fetch(PDO::FETCH_ASSOC);             //assoc array = key:value array like dictionary
-
         return $row["total"];
 
     }
@@ -40,12 +37,26 @@ class SitesResultsProvider {
         $query->bindParam(":term", $searchTerm); 
         $query->execute();
 
-        $resultsHtml = "<div class= 'siteResults'>";
+        $resultsHtml = "<div class= 'siteResults'>";        //Preparing HTML for search results with new class
 
         while($row = $query->fetch(PDO::FETCH_ASSOC)){
             
+            $id = $row["id"];
+            $url = $row["url"];
             $title = $row["title"];
-            $resultsHtml .= "$title <br>";
+            $description = $row["description"];
+
+            $resultsHtml .= "<div class='resultContainer'>
+
+                            <h3 class='title'>
+                                <a class='result' href='$url'>
+                                    $title
+                                </a>
+                            </h3>
+                            <span class='url'>$url</span>
+                            <span class='description'>$description</span>
+
+                            </div>";
 
         }            
 
